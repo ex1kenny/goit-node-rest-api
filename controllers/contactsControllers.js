@@ -1,3 +1,4 @@
+import HttpError from "../helpers/HttpError.js";
 import {
   listContacts,
   getContactById,
@@ -10,74 +11,69 @@ import {
   updateContactSchema,
 } from "../schemas/contactsSchemas.js";
 
-export const getAllContacts = async (req, res) => {
+export const getAllContacts = async (req, res, next) => {
   try {
-    const data = await listContacts();
-    res.status(200).json(data);
+    const contact = await listContacts();
+    res.json(contact);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    next(err);
   }
 };
 
-export const getOneContact = async (req, res) => {
+export const getOneContact = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const data = await getContactById(id);
-    if (data) {
-      res.status(200).json(data);
-    } else {
-      res.status(404).json({ message: "Not found" });
+    const contact = await getContactById(id);
+    if (!contact) {
+      throw HttpError(404, "Contact not found");
     }
+    res.json(contact);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    next(err);
   }
 };
 
-export const deleteContact = async (req, res) => {
+export const deleteContact = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const data = await removeContact(id);
-    if (data) {
-      res.status(200).json(data);
-    } else {
-      res.status(404).json({ message: "Not found" });
+    const contact = await removeContact(id);
+    if (!contact) {
+      throw HttpError(404, "Contact not found");
     }
-  } catch (err) {}
+    res.json(contact);
+  } catch (err) {
+    next(err);
+  }
 };
 
-export const createContact = async (req, res) => {
+export const createContact = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { name, email, phone } = req.body;
     const validate = await createContactSchema.validateAsync(req.body);
     if (validate.error) {
-      return res.status(400).json({ message: validate.error.message });
+      throw HttpError(400, { message: validate.error.message });
     }
-    const data = await addContact({ id, name, email, phone });
-    res.status(201).json(data);
+    const contact = await addContact({ id, name, email, phone });
+    res.status(201).json(contact);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    next(err);
   }
 };
-export const updateContact = async (req, res) => {
+export const updateContact = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { name, email, phone } = req.body;
-    if (Object.keys(req.body).length === 0) {
-      return res
-        .status(400)
-        .json({ message: "Body must have at least one field" });
-    }
     const validate = await updateContactSchema.validateAsync(req.body);
     if (validate.error) {
-      return res.status(400).json({ message: validate.error.message });
+      throw HttpError(400, { message: validate.error.message });
     }
-    const data = await changeContact(id, { name, email, phone });
-    if (!data) {
-      return res.status(404).json({ message: "id not found" });
+    const contact = await changeContact(id, { name, email, phone });
+    if (!contact) {
+      throw HttpError(404, "id not found");
     }
-    res.status(200).json(data);
+    res.json(contact);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    next(err);
   }
 };
