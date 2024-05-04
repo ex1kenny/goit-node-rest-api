@@ -31,7 +31,7 @@ async function createContact(req, res, next) {
   };
   try {
     const result = await Contact.create(contact);
-    res.status(201).send(result);
+    res.status(201).json(result);
   } catch (error) {
     next(error);
   }
