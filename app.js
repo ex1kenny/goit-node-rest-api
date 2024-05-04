@@ -2,10 +2,11 @@ import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 import "dotenv/config";
-import "./db.js";
+import DataBase from "./db.js";
 
 import contactsRouter from "./routes/contactsRouter.js";
 
+DataBase();
 const app = express();
 
 app.use(morgan("tiny"));
