@@ -42,7 +42,12 @@ async function updateContact(req, res, next) {
   try {
     const result = await Contact.findByIdAndUpdate(
       id,
-      { name: req.body.name, email: req.body.email, phone: req.body.phone },
+      {
+        name: req.body.name,
+        email: req.body.email,
+        phone: req.body.phone,
+        favorite: req.body.favorite,
+      },
       { new: true }
     );
     if (!result) {
