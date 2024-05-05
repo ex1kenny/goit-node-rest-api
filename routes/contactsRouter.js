@@ -6,32 +6,32 @@ import {
   updateFavorite,
 } from "../schemas/contactsSchemas.js";
 
-import ContactController from "../controllers/contactsControllers.js";
+import contactController from "../controllers/contactsControllers.js";
 
 const contactsRouter = express.Router();
 
-contactsRouter.get("/", ContactController.getAllContacts);
+contactsRouter.get("/", contactController.getAllContacts);
 
-contactsRouter.get("/:id", ContactController.getOneContact);
+contactsRouter.get("/:id", contactController.getOneContact);
 
-contactsRouter.delete("/:id", ContactController.deleteContact);
+contactsRouter.delete("/:id", contactController.deleteContact);
 
 contactsRouter.post(
   "/",
   validateBody(createContactSchema),
-  ContactController.createContact
+  contactController.createContact
 );
 
 contactsRouter.put(
   "/:id",
   validateBody(updateContactSchema),
-  ContactController.updateContact
+  contactController.updateContact
 );
 
 contactsRouter.patch(
   "/:id/favorite",
   validateBody(updateFavorite),
-  ContactController.updateFavorite
+  contactController.updateFavorite
 );
 
 export default contactsRouter;

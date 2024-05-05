@@ -11,8 +11,8 @@ async function getAllContacts(req, res, next) {
 }
 
 async function getOneContact(req, res, next) {
-  const { id } = req.params;
   try {
+    const { id } = req.params;
     const contact = await Contact.findById(id);
     if (!contact) throw HttpError(404, "Contact not found");
 
@@ -23,14 +23,13 @@ async function getOneContact(req, res, next) {
 }
 
 async function createContact(req, res, next) {
-  const contact = {
-    name: req.body.name,
-    email: req.body.email,
-    phone: req.body.phone,
-    favorite: req.body.favorite,
-  };
   try {
-    const result = await Contact.create(contact);
+    const result = await Contact.create({
+      name: req.body.name,
+      email: req.body.email,
+      phone: req.body.phone,
+      favorite: req.body.favorite,
+    });
     res.status(201).json(result);
   } catch (error) {
     next(error);
@@ -38,8 +37,8 @@ async function createContact(req, res, next) {
 }
 
 async function updateContact(req, res, next) {
-  const { id } = req.params;
   try {
+    const { id } = req.params;
     const result = await Contact.findByIdAndUpdate(
       id,
       {
@@ -60,8 +59,8 @@ async function updateContact(req, res, next) {
 }
 
 async function deleteContact(req, res, next) {
-  const { id } = req.params;
   try {
+    const { id } = req.params;
     const result = await Contact.findByIdAndDelete(id);
 
     if (result === null) {
@@ -74,11 +73,11 @@ async function deleteContact(req, res, next) {
 }
 
 async function updateFavorite(req, res, next) {
-  const { id } = req.params;
-  const contact = {
-    favorite: req.body.favorite,
-  };
   try {
+    const { id } = req.params;
+    const contact = {
+      favorite: req.body.favorite,
+    };
     const result = await Contact.findByIdAndUpdate(id, contact, { new: true });
     if (result === null) {
       throw HttpError(404, "Not found");
