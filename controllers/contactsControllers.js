@@ -40,8 +40,12 @@ async function createContact(req, res, next) {
 async function updateContact(req, res, next) {
   const { id } = req.params;
   try {
-    const result = await Contact.findByIdAndUpdate(id, { new: true });
-    if (result === null) {
+    const result = await Contact.findByIdAndUpdate(
+      id,
+      { name: req.body.name, email: req.body.email, phone: req.body.phone },
+      { new: true }
+    );
+    if (!result) {
       throw HttpError(404, "Contact not found");
     }
     res.json(result);
