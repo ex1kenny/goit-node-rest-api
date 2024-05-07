@@ -5,32 +5,36 @@ import {
   updateContactSchema,
   updateFavorite,
 } from "../schemas/contactsSchemas.js";
+import { userAuthToken } from "../Middlewares/Middlewares.js";
 
 import contactController from "../controllers/contactsControllers.js";
 
 const contactsRouter = express.Router();
 
-contactsRouter.get("/", contactController.getAllContacts);
+contactsRouter.get("/", userAuthToken, contactController.getAllContacts);
 
-contactsRouter.get("/:id", contactController.getOneContact);
+contactsRouter.get("/:id", userAuthToken, contactController.getOneContact);
 
-contactsRouter.delete("/:id", contactController.deleteContact);
+contactsRouter.delete("/:id", userAuthToken, contactController.deleteContact);
 
 contactsRouter.post(
   "/",
   validateBody(createContactSchema),
+  userAuthToken,
   contactController.createContact
 );
 
 contactsRouter.put(
   "/:id",
   validateBody(updateContactSchema),
+  userAuthToken,
   contactController.updateContact
 );
 
 contactsRouter.patch(
   "/:id/favorite",
   validateBody(updateFavorite),
+  userAuthToken,
   contactController.updateFavorite
 );
 
