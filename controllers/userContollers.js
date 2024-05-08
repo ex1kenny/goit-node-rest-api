@@ -4,14 +4,14 @@ import User from "../model/user.js";
 
 async function registerUser(req, res, next) {
   try {
-    const { email, password } = req.body;
+    const { email, password, subscription } = req.body;
     const user = await User.findOne({ email });
     if (user) {
       return res.status(409).json({ message: "Email in use" });
     }
     const salt = await bcrypt.genSalt(10);
     const saltPassword = await bcrypt.hash(password, salt);
-    const newUser = new User({ email, password: saltPassword });
+    const newUser = new User({ email, password: saltPassword, subscription });
     await newUser.save();
     return res.status(201).json({
       user: {

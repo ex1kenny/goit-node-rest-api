@@ -1,19 +1,22 @@
 import express from "express";
 import validateBody from "../helpers/validateBody.js";
-import { usersAuthSchema } from "../schemas/usersSchemas.js";
+import {
+  usersAuthloginSchema,
+  usersAuthRegisterSchema,
+} from "../schemas/usersSchemas.js";
 import userContollers from "../controllers/userContollers.js";
 import { userAuthToken } from "../Middlewares/Middlewares.js";
 const usersRouter = express.Router();
 
 usersRouter.post(
   "/register",
-  validateBody(usersAuthSchema),
+  validateBody(usersAuthRegisterSchema),
   userContollers.registerUser
 );
 
 usersRouter.post(
   "/login",
-  validateBody(usersAuthSchema),
+  validateBody(usersAuthloginSchema),
   userContollers.loginUser
 );
 
