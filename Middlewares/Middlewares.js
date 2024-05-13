@@ -1,8 +1,9 @@
 import User from "../model/user.js";
 import HttpError from "../helpers/HttpError.js";
 import jwt from "jsonwebtoken";
+import { v4 as uuidv4 } from "uuid";
+import path from "path";
 import multer from "multer";
-import { v4 } from "uuid";
 
 export const userAuthToken = async (req, res, next) => {
   try {
@@ -50,7 +51,7 @@ const filter = (req, file, cb) => {
   }
 };
 
-export const uploadAvatar = multer({
+export const dowloadAvatar = multer({
   storage: storage,
   fileFilter: filter,
 }).single("avatar");

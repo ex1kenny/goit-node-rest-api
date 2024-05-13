@@ -6,7 +6,7 @@ import {
 } from "../schemas/usersSchemas.js";
 import userContollers from "../controllers/userContollers.js";
 import { userAuthToken } from "../Middlewares/Middlewares.js";
-import { uploadAvatar } from "../Middlewares/Middlewares.js";
+import { dowloadAvatar } from "../Middlewares/Middlewares.js";
 const usersRouter = express.Router();
 
 usersRouter.post(
@@ -28,7 +28,7 @@ usersRouter.post("/current", userAuthToken, userContollers.currentUser);
 usersRouter.patch(
   "/avatars",
   userAuthToken,
-  uploadAvatar,
+  dowloadAvatar,
   userContollers.updateAvatar
 );
 export default usersRouter;

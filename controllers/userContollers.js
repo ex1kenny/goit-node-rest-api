@@ -100,10 +100,10 @@ async function updateAvatar(req, res, next) {
     Jimp.read(req.file.path, (err, img) => {
       if (err) throw err;
       img
-        .resize(100, 100) // resize
-        .quality(60) // set JPEG quality
-        .greyscale() // set greyscale
-        .write(path.join("public", "avatars", req.file.filename)); // save
+        .resize(100, 100)
+        .quality(60)
+        .greyscale()
+        .write(path.join("public", "avatars", req.file.filename));
     });
 
     const { email } = req.user;
