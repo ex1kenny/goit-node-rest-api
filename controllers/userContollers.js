@@ -1,6 +1,9 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import User from "../model/user.js";
+import Jimp from "jimp";
+import crypto from "crypto";
+import HttpError from "../helpers/HttpError.js";
 
 async function registerUser(req, res, next) {
   try {
@@ -11,7 +14,16 @@ async function registerUser(req, res, next) {
     }
     const salt = await bcrypt.genSalt(10);
     const saltPassword = await bcrypt.hash(password, salt);
-    const newUser = new User({ email, password: saltPassword, subscription });
+    const avatar = (email) => {
+      const hashAvatar = crypto.createHash("md5").update(email).digest("hex");
+      return `https://gravatar.com/avatar/${hashAvatar}.jpg?d=robohash`;
+    };
+    const newUser = new User({
+      email,
+      password: saltPassword,
+      subscription,
+      avatarURL: avatar(email),
+    });
     await newUser.save();
     return res.status(201).json({
       user: {
@@ -43,7 +55,7 @@ async function loginUser(req, res, next) {
     }
 
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-      expiresIn: "12h",
+      expiresIn: "24h",
     });
 
     await User.findByIdAndUpdate(user.id, { token });
@@ -81,9 +93,36 @@ async function currentUser(req, res, next) {
   }
 }
 
+async function updateAvatar(req, res, next) {
+  try {
+    if (!req.file) throw new HttpError(400);
+
+    Jimp.read(req.file.path, (err, img) => {
+      if (err) throw err;
+      img
+        .resize(100, 100) // resize
+        .quality(60) // set JPEG quality
+        .greyscale() // set greyscale
+        .write(path.join("public", "avatars", req.file.filename)); // save
+    });
+
+    const { email } = req.user;
+
+    await User.findOneAndUpdate(
+      { email },
+      { avatarURL: `avatars/${req.file.filename}` }
+    );
+
+    res.status(200).json({ avatarURL: `avatars/${req.file.filename}` });
+  } catch (error) {
+    next(error);
+  }
+}
+
 export default {
   registerUser,
   loginUser,
   LogoutUser,
   currentUser,
+  updateAvatar,
 };
