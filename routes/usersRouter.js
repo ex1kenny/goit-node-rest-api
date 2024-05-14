@@ -7,6 +7,7 @@ import {
 import userContollers from "../controllers/userContollers.js";
 import { userAuthToken } from "../Middlewares/Middlewares.js";
 import { dowloadAvatar } from "../Middlewares/Middlewares.js";
+
 const usersRouter = express.Router();
 
 usersRouter.post(
@@ -31,4 +32,5 @@ usersRouter.patch(
   dowloadAvatar,
   userContollers.updateAvatar
 );
+
 export default usersRouter;

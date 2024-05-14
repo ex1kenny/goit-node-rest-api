@@ -4,6 +4,8 @@ import User from "../model/user.js";
 import Jimp from "jimp";
 import crypto from "crypto";
 import HttpError from "../helpers/HttpError.js";
+import fs from "fs";
+import path from "path";
 
 async function registerUser(req, res, next) {
   try {
@@ -118,7 +120,6 @@ async function updateAvatar(req, res, next) {
     next(error);
   }
 }
-
 export default {
   registerUser,
   loginUser,

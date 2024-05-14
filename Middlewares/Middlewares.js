@@ -1,9 +1,10 @@
 import User from "../model/user.js";
 import HttpError from "../helpers/HttpError.js";
 import jwt from "jsonwebtoken";
-import { v4 as uuidv4 } from "uuid";
+import { v4 } from "uuid";
 import path from "path";
 import multer from "multer";
+import fs from "fs";
 
 export const userAuthToken = async (req, res, next) => {
   try {
@@ -47,7 +48,7 @@ const filter = (req, file, cb) => {
   if (file.mimetype.startsWith("image/")) {
     cb(null, true);
   } else {
-    cb(new HttpError(400, "Please, upload images only.."), false);
+    cb(new HttpError(400, "upload images"), false);
   }
 };
 
