@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import User from "../model/user.js";
 import Jimp from "jimp";
+import gravatar from "gravatar";
 import crypto from "crypto";
 import HttpError from "../helpers/HttpError.js";
 import fs from "fs";
@@ -16,15 +17,12 @@ async function registerUser(req, res, next) {
     }
     const salt = await bcrypt.genSalt(10);
     const saltPassword = await bcrypt.hash(password, salt);
-    const avatar = (email) => {
-      const hashAvatar = crypto.createHash("md5").update(email).digest("hex");
-      return `https://gravatar.com/avatar/${hashAvatar}.jpg?d=robohash`;
-    };
+    const avatar = gravatar.url(email, { s: "200", d: "robohash" }, true);
     const newUser = new User({
       email,
       password: saltPassword,
       subscription,
-      avatarURL: avatar(email),
+      avatarURL: avatar,
     });
     await newUser.save();
     return res.status(201).json({
@@ -94,19 +92,17 @@ async function currentUser(req, res, next) {
     next(error);
   }
 }
-
 async function updateAvatar(req, res, next) {
   try {
-    if (!req.file) throw new HttpError(400);
+    if (!req.file) throw new HttpError(400, "No file uploaded");
 
-    Jimp.read(req.file.path, (err, img) => {
-      if (err) throw err;
-      img
-        .resize(100, 100)
-        .quality(60)
-        .greyscale()
-        .write(path.join("public", "avatars", req.file.filename));
-    });
+    const tmp = req.file.path;
+    const readPath = path.join("public", "avatars", req.file.filename);
+
+    const img = await Jimp.read(tmp);
+    await img.resize(100, 100).quality(60).greyscale().writeAsync(readPath);
+
+    await fs.promises.unlink(tmp);
 
     const { email } = req.user;
 
@@ -120,6 +116,7 @@ async function updateAvatar(req, res, next) {
     next(error);
   }
 }
+
 export default {
   registerUser,
   loginUser,
