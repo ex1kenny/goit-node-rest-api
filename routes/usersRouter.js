@@ -4,6 +4,7 @@ import {
   usersAuthloginSchema,
   usersAuthRegisterSchema,
 } from "../schemas/usersSchemas.js";
+
 import userContollers from "../controllers/userContollers.js";
 import { userAuthToken } from "../Middlewares/Middlewares.js";
 import { dowloadAvatar } from "../Middlewares/Middlewares.js";
@@ -24,7 +25,7 @@ usersRouter.post(
 
 usersRouter.post("/logout", userAuthToken, userContollers.LogoutUser);
 
-usersRouter.post("/current", userAuthToken, userContollers.currentUser);
+usersRouter.get("/current", userAuthToken, userContollers.currentUser);
 
 usersRouter.patch(
   "/avatars",
@@ -32,5 +33,9 @@ usersRouter.patch(
   dowloadAvatar,
   userContollers.updateAvatar
 );
+
+usersRouter.get("/verify/:verificationToken", userContollers.verifyEmail);
+
+usersRouter.post("/verify", userContollers.resendVerifyEmail);
 
 export default usersRouter;

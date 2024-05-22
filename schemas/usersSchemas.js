@@ -14,3 +14,7 @@ export const usersAuthRegisterSchema = Joi.object()
     email: Joi.string().email().required(),
     subscription: Joi.string().optional(),
   });
+
+export const emailSchema = Joi.object().options({}).keys({
+  email: Joi.string().email().required(),
+});
