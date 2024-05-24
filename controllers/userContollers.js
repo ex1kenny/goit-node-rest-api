@@ -17,9 +17,13 @@ async function registerUser(req, res, next) {
       return res.status(409).json({ message: "Email in use" });
     }
     const salt = await bcrypt.genSalt(10);
+
     const saltPassword = await bcrypt.hash(password, salt);
+
     const verificationToken = crypto.randomBytes(32).toString("hex");
+
     const avatar = gravatar.url(email, { s: "200", d: "robohash" }, true);
+    
     const newUser = new User({
       email,
       password: saltPassword,
@@ -157,8 +161,6 @@ async function verifyEmail(req, res, next) {
 async function resendVerifyEmail(req, res, next) {
   try {
     const { email } = req.body;
-
-    if (error) throw HttpError(400, error);
 
     const user = await User.findOne({ email });
 
