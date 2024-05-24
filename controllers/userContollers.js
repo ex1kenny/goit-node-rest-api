@@ -129,8 +129,6 @@ async function updateAvatar(req, res, next) {
 
 async function verifyEmail(req, res, next) {
   try {
-    console.log("Verification token:", req.params.verificationToken);
-
     const { verificationToken } = req.params;
 
     const user = await User.findOne({ verificationToken });

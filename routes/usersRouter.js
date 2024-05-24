@@ -8,7 +8,7 @@ import {
 import userContollers from "../controllers/userContollers.js";
 import { userAuthToken } from "../Middlewares/Middlewares.js";
 import { dowloadAvatar } from "../Middlewares/Middlewares.js";
-
+import { emailSchema } from "../schemas/usersSchemas.js";
 const usersRouter = express.Router();
 
 usersRouter.post(
@@ -36,6 +36,10 @@ usersRouter.patch(
 
 usersRouter.get("/verify/:verificationToken", userContollers.verifyEmail);
 
-usersRouter.post("/verify", userContollers.resendVerifyEmail);
+usersRouter.post(
+  "/verify",
+  validateBody(emailSchema),
+  userContollers.resendVerifyEmail
+);
 
 export default usersRouter;

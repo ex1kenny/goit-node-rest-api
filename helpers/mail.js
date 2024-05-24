@@ -16,6 +16,6 @@ export const sendEmail = async (data) => {
     ...data,
     from: process.env.MAILTRAP_USERNAME,
   };
-  await transport.sendMail(email).then(console.log).catch(console.error);
+  await transport.sendMail(email);
   return true;
 };
