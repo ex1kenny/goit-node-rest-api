@@ -6,6 +6,7 @@ export const createContactSchema = Joi.object({
     .pattern(new RegExp(/^[a-zA-Z0-9\s\-]+$/)),
   email: Joi.string().email().required(),
   phone: Joi.string().required(),
+  favorite: Joi.boolean(),
 });
 export const updateContactSchema = Joi.object({
   name: Joi.string()
@@ -15,8 +16,13 @@ export const updateContactSchema = Joi.object({
     .required(),
   email: Joi.string().email().required(),
   phone: Joi.string().required(),
+  favorite: Joi.boolean(),
 })
   .min(1)
   .messages({
     "object.min": "Body must have at least one field",
   });
+
+export const updateFavorite = Joi.object({
+  favorite: Joi.boolean(),
+}).min(1);
