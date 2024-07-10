@@ -1,79 +1,97 @@
+import Contact from "../model/contact.js";
 import HttpError from "../helpers/HttpError.js";
-import {
-  listContacts,
-  getContactById,
-  removeContact,
-  addContact,
-  changeContact,
-} from "../services/contactsServices.js";
-import {
-  createContactSchema,
-  updateContactSchema,
-} from "../schemas/contactsSchemas.js";
 
-export const getAllContacts = async (req, res, next) => {
+async function getAllContacts(req, res, next) {
   try {
-    const contact = await listContacts();
+    const contact = await Contact.find();
     res.json(contact);
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    next(error);
   }
-};
+}
 
-export const getOneContact = async (req, res, next) => {
+async function getOneContact(req, res, next) {
   try {
     const { id } = req.params;
-    const contact = await getContactById(id);
-    if (!contact) {
+    const contact = await Contact.findById(id);
+    if (!contact) throw HttpError(404, "Contact not found");
+
+    res.json(contact);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function createContact(req, res, next) {
+  try {
+    const result = await Contact.create({
+      name: req.body.name,
+      email: req.body.email,
+      phone: req.body.phone,
+      favorite: req.body.favorite,
+    });
+    res.status(201).json(result);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function updateContact(req, res, next) {
+  try {
+    const { id } = req.params;
+    const result = await Contact.findByIdAndUpdate(
+      id,
+      {
+        name: req.body.name,
+        email: req.body.email,
+        phone: req.body.phone,
+        favorite: req.body.favorite,
+      },
+      { new: true }
+    );
+    if (!result) {
       throw HttpError(404, "Contact not found");
     }
-    res.json(contact);
-  } catch (err) {
-    next(err);
+    res.json(result);
+  } catch (error) {
+    next(error);
   }
-};
+}
 
-export const deleteContact = async (req, res, next) => {
+async function deleteContact(req, res, next) {
   try {
     const { id } = req.params;
-    const contact = await removeContact(id);
-    if (!contact) {
+    const result = await Contact.findByIdAndDelete(id);
+
+    if (result === null) {
       throw HttpError(404, "Contact not found");
     }
-    res.json(contact);
-  } catch (err) {
-    next(err);
+    res.json({ result });
+  } catch (error) {
+    next(error);
   }
-};
+}
 
-export const createContact = async (req, res, next) => {
+async function updateFavorite(req, res, next) {
   try {
     const { id } = req.params;
-    const { name, email, phone } = req.body;
-    const validate = await createContactSchema.validateAsync(req.body);
-    if (validate.error) {
-      throw HttpError(400, { message: validate.error.message });
+    const contact = {
+      favorite: req.body.favorite,
+    };
+    const result = await Contact.findByIdAndUpdate(id, contact, { new: true });
+    if (result === null) {
+      throw HttpError(404, "Not found");
     }
-    const contact = await addContact({ id, name, email, phone });
-    res.status(201).json(contact);
-  } catch (err) {
-    next(err);
+    res.json(result);
+  } catch (error) {
+    next(error);
   }
-};
-export const updateContact = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const { name, email, phone } = req.body;
-    const validate = await updateContactSchema.validateAsync(req.body);
-    if (validate.error) {
-      throw HttpError(400, { message: validate.error.message });
-    }
-    const contact = await changeContact(id, { name, email, phone });
-    if (!contact) {
-      throw HttpError(404, "id not found");
-    }
-    res.json(contact);
-  } catch (err) {
-    next(err);
-  }
+}
+export default {
+  updateContact,
+  createContact,
+  getOneContact,
+  getAllContacts,
+  deleteContact,
+  updateFavorite,
 };
