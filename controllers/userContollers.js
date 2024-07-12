@@ -23,7 +23,7 @@ async function registerUser(req, res, next) {
     const verificationToken = crypto.randomBytes(32).toString("hex");
 
     const avatar = gravatar.url(email, { s: "200", d: "robohash" }, true);
-    
+
     const newUser = new User({
       email,
       password: saltPassword,
@@ -69,7 +69,7 @@ async function loginUser(req, res, next) {
     }
 
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-      expiresIn: "24h",
+      expiresIn: "76h",
     });
 
     await User.findByIdAndUpdate(user.id, { token });

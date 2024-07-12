@@ -4,7 +4,7 @@ import HttpError from "../helpers/HttpError.js";
 async function getAllContacts(req, res, next) {
   try {
     const { _id: owner } = req.user;
-    console.log(owner);
+
     const contacts = await Contact.find({ owner });
     res.json(contacts);
   } catch (error) {

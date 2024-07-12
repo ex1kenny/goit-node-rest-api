@@ -7,7 +7,7 @@ import swaggerUi from "swagger-ui-express";
 import "dotenv/config";
 
 import { swaggerSpec } from "./helpers/swager.js";
-
+// import baardRouter from "./routes/baardRouter.js";
 import contactsRouter from "./routes/contactsRouter.js";
 import usersRouter from "./routes/usersRouter.js";
 
@@ -19,6 +19,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
 
+// app.use("/api/baard", baardRouter);
 app.use("/api/contacts", contactsRouter);
 app.use("/users", usersRouter);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));

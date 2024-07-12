@@ -9,7 +9,11 @@ import { userAuthToken } from "../Middlewares/Middlewares.js";
 
 import contactController from "../controllers/contactsControllers.js";
 
+
+
 const contactsRouter = express.Router();
+
+
 
 contactsRouter.get("/", userAuthToken, contactController.getAllContacts);
 
